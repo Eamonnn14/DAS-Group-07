@@ -48,6 +48,12 @@ colSums(is.na(data))
 ```
 
 ```{r}
+# Detecting outliers
+data <- data %>%
+  mutate(across(c(year, length, budget, votes, rating), ~replace(.x, .x %in% boxplot.stats(.x)$out, NA)))
+```
+
+```{r}
 # Data wrangling
 data$length[is.na(data$length)] <- median(data$length, na.rm = TRUE)
 # Creating a new binary variable
