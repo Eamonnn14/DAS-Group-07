@@ -49,13 +49,32 @@ colSums(is.na(data))
 
 ```{r}
 # Detecting outliers
-data <- data %>%
-  mutate(across(c(year, length, budget, votes, rating), ~replace(.x, .x %in% boxplot.stats(.x)$out, NA)))
+numeric_vars <- c("budget", "votes")
+
+for (var in numeric_vars) {
+  data[[paste0(var, "_log")]] <- log1p(data[[var]])
+  Q1 <- quantile(data[[paste0(var, "_log")]], 0.25, na.rm = TRUE)
+  Q3 <- quantile(data[[paste0(var, "_log")]], 0.75, na.rm = TRUE)
+  IQR_value <- Q3 - Q1
+  
+  data[[paste0(var, "_log")]] <- ifelse(data[[paste0(var, "_log")]] < (Q1 - 2.5 * IQR_value) | data[[paste0(var, "_log")]] > (Q3 + 2.5 * IQR_value), NA, data[[paste0(var, "_log")]])
+}
+colSums(is.na(data[c("budget_log", "votes_log")]))
 ```
 
 ```{r}
 # Data wrangling
 data$length[is.na(data$length)] <- median(data$length, na.rm = TRUE)
+
+for (var in numeric_vars) {
+  median_log_value <- median(data[[paste0(var, "_log")]], na.rm = TRUE)
+  data[[paste0(var, "_log")]][is.na(data[[paste0(var, "_log")]])] <- median_log_value
+  
+  data[[var]] <- expm1(data[[paste0(var, "_log")]])
+  
+  data[[paste0(var, "_log")]] <- NULL
+}
+
 # Creating a new binary variable
 data$above_7 <- ifelse(data$rating > 7, 1, 0)
 ```
