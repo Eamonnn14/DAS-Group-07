@@ -38,7 +38,7 @@ data <- read.csv("/Users/ziluwang/Documents/GitHub/DAS-Project2-Group7/dataset07
 
 # Introduction {#sec-intro}
 
-Introduction paragraph
+In this project, we aim to explore and analyze the movie dataset, focusing on various factors that might influence a movie's success. This dataset includes variables such as budget, votes, genre, and ratings. Through exploratory data analysis (EDA) and formal data analysis (FDA), we will identify significant patterns, detect outliers, and predict factors contributing to a movie's rating above 7. Our goal is to provide insights into the movie industry's dynamics and suggest what elements make a movie popular among viewers.
 
 # Exploratory Data Analysis {#sec-EDA}
 
@@ -78,6 +78,7 @@ for (var in numeric_vars) {
 # Creating a new binary variable
 data$above_7 <- ifelse(data$rating > 7, 1, 0)
 ```
+# Initial data preprocessing included filling missing values (e.g., using median to fill missing values for budget and votes), use log-transformation converting data types.
 
 ```{r}
 glimpse(data)
